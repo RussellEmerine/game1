@@ -536,7 +536,7 @@ function init_maek() {
 					hashLoadTime += performance.now() - beforeLoad;
 					if (err) {
 						//if failed to read file, report hash as 'x':
-						if (err.code != "ENOENT") {
+						if (err.code !== "ENOENT") {
 							console.warn(`Failed to hash ${file} because of unexpected error ${err}`); //DEBUG
 						}
 						resolve(`x`);

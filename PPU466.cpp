@@ -372,7 +372,7 @@ PPUDataStream::PPUDataStream() {
 		GL_INT, //type
 		GL_FALSE, //normalized
 		sizeof(Vertex), //stride
-		(GLbyte *)0 + offsetof(Vertex, Position) //offset
+		(GLbyte *)nullptr + offsetof(Vertex, Position) //offset
 	);
 	glEnableVertexAttribArray(tile_program->Position_vec2);
 
@@ -382,7 +382,7 @@ PPUDataStream::PPUDataStream() {
 		2, //size
 		GL_INT, //type
 		sizeof(Vertex), //stride
-		(GLbyte *)0 + offsetof(Vertex, TileCoord) //offset
+		(GLbyte *)nullptr + offsetof(Vertex, TileCoord) //offset
 	);
 	glEnableVertexAttribArray(tile_program->TileCoord_ivec2);
 
@@ -392,7 +392,7 @@ PPUDataStream::PPUDataStream() {
 		1, //size
 		GL_UNSIGNED_INT, //type
 		sizeof(Vertex), //stride
-		(GLbyte *)0 + offsetof(Vertex, Palette) //offset
+		(GLbyte *)nullptr + offsetof(Vertex, Palette) //offset
 	);
 	glEnableVertexAttribArray(tile_program->Palette_int);
 

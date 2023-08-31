@@ -50,7 +50,7 @@ T const *new_T() { return new T; }
 template< typename T >
 struct Load {
 	//Constructing a Load< T > adds the passed function to the list of functions to call:
-	Load(LoadTag tag, const std::function< T const *() > &load_fn = new_T< T >) : value(nullptr) {
+	explicit Load(LoadTag tag, const std::function< T const *() > &load_fn = new_T< T >) : value(nullptr) {
 		add_load_function(tag, [this,load_fn](){
 			this->value = load_fn();
 			if (!(this->value)) {
@@ -61,7 +61,7 @@ struct Load {
 
 	//Make a "Load< T >" behave like a "T const *":
 	explicit operator bool() { return value != nullptr; }
-	operator T const *() { return value; }
+	explicit operator T const *() { return value; }
 	T const &operator*() { return *value; }
 	T const *operator->() { return value; }
 

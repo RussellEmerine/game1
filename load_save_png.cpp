@@ -14,7 +14,7 @@ using std::vector;
 bool load_png(std::istream &from, unsigned int *width, unsigned int *height, vector< glm::u8vec4 > *data, OriginLocation origin);
 void save_png(std::ostream &to, unsigned int width, unsigned int height, glm::u8vec4 const *data, OriginLocation origin);
 
-void load_png(std::string filename, glm::uvec2 *size, std::vector< glm::u8vec4 > *data, OriginLocation origin) {
+void load_png(const std::string& filename, glm::uvec2 *size, std::vector< glm::u8vec4 > *data, OriginLocation origin) {
 	assert(size);
 
 	std::ifstream file(filename.c_str(), std::ios::binary);
@@ -26,14 +26,14 @@ void load_png(std::string filename, glm::uvec2 *size, std::vector< glm::u8vec4 >
 	}
 }
 
-void save_png(std::string filename, glm::uvec2 size, glm::u8vec4 const *data, OriginLocation origin) {
+void save_png(const std::string& filename, glm::uvec2 size, glm::u8vec4 const *data, OriginLocation origin) {
 	std::ofstream file(filename.c_str(), std::ios::binary);
 	save_png(file, size.x, size.y, data, origin);
 }
 
 
 static void user_read_data(png_structp png_ptr, png_bytep data, png_size_t length) {
-	std::istream *from = reinterpret_cast< std::istream * >(png_get_io_ptr(png_ptr));
+	auto *from = reinterpret_cast< std::istream * >(png_get_io_ptr(png_ptr));
 	assert(from);
 	if (!from->read(reinterpret_cast< char * >(data), length)) {
 		png_error(png_ptr, "Error reading.");
@@ -41,7 +41,7 @@ static void user_read_data(png_structp png_ptr, png_bytep data, png_size_t lengt
 }
 
 static void user_write_data(png_structp png_ptr, png_bytep data, png_size_t length) {
-	std::ostream *to = reinterpret_cast< std::ostream * >(png_get_io_ptr(png_ptr));
+	auto *to = reinterpret_cast< std::ostream * >(png_get_io_ptr(png_ptr));
 	assert(to);
 	if (!to->write(reinterpret_cast< char * >(data), length)) {
 		png_error(png_ptr, "Error writing.");
@@ -49,7 +49,7 @@ static void user_write_data(png_structp png_ptr, png_bytep data, png_size_t leng
 }
 
 static void user_flush_data(png_structp png_ptr) {
-	std::ostream *to = reinterpret_cast< std::ostream * >(png_get_io_ptr(png_ptr));
+	auto *to = reinterpret_cast< std::ostream * >(png_get_io_ptr(png_ptr));
 	assert(to);
 	if (!to->flush()) {
 		png_error(png_ptr, "Error flushing.");
@@ -66,7 +66,7 @@ bool load_png(std::istream &from, unsigned int *width, unsigned int *height, vec
 	data->clear();
 	//..... load file ......
 	//Load a png file, as per the libpng docs:
-	png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, (png_voidp)NULL, (png_error_ptr)NULL, (png_error_ptr)NULL);
+	png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, (png_voidp)nullptr, (png_error_ptr)nullptr, (png_error_ptr)nullptr);
 
 	png_set_read_fn(png, &from, user_read_data);
 
@@ -77,14 +77,14 @@ bool load_png(std::istream &from, unsigned int *width, unsigned int *height, vec
 	png_infop info = png_create_info_struct(png);
 	if (!info) {
 		LOG_ERROR("  cannot alloc info struct.");
-		png_destroy_read_struct(&png, (png_infopp)NULL, (png_infopp)NULL);
+		png_destroy_read_struct(&png, (png_infopp)nullptr, (png_infopp)nullptr);
 		return false;
 	}
-	png_bytep *row_pointers = NULL;
+	png_bytep *row_pointers = nullptr;
 	if (setjmp(png_jmpbuf(png))) {
 		LOG_ERROR("  png interal error.");
-		png_destroy_read_struct(&png, &info, (png_infopp)NULL);
-		if (row_pointers != NULL) delete[] row_pointers;
+		png_destroy_read_struct(&png, &info, (png_infopp)nullptr);
+		if (row_pointers != nullptr) delete[] row_pointers;
 		data->clear();
 		return false;
 	}
@@ -119,7 +119,7 @@ bool load_png(std::istream &from, unsigned int *width, unsigned int *height, vec
 		}
 	}
 	png_read_image(png, row_pointers);
-	png_destroy_read_struct(&png, &info, NULL);
+	png_destroy_read_struct(&png, &info, nullptr);
 	delete[] row_pointers;
 
 	*width = w;
@@ -130,18 +130,18 @@ bool load_png(std::istream &from, unsigned int *width, unsigned int *height, vec
 
 void save_png(std::ostream &to, unsigned int width, unsigned int height, glm::u8vec4 const *data, OriginLocation origin) {
 //After the libpng example.c
-	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
 
 	png_set_write_fn(png_ptr, &to, user_write_data, user_flush_data);
 
-	if (png_ptr == NULL) {
+	if (png_ptr == nullptr) {
 		LOG_ERROR("Can't create write struct.");
 		return;
 	}
 
 	png_infop info_ptr = png_create_info_struct(png_ptr);
-	if (info_ptr == NULL) {
-		png_destroy_write_struct(&png_ptr, NULL);
+	if (info_ptr == nullptr) {
+		png_destroy_write_struct(&png_ptr, nullptr);
 		LOG_ERROR("Can't craete info pointer");
 		return;
 	}
@@ -170,6 +170,4 @@ void save_png(std::ostream &to, unsigned int width, unsigned int height, glm::u8
 	png_write_end(png_ptr, info_ptr);
 
 	png_destroy_write_struct(&png_ptr, &info_ptr);
-
-	return;
 }

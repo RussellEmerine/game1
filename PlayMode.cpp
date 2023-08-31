@@ -19,7 +19,7 @@ PlayMode::PlayMode() {
 	//Also, *don't* use these tiles in your game:
 
 	{ //use tiles 0-16 as some weird dot pattern thing:
-		std::array< uint8_t, 8*8 > distance;
+		std::array< uint8_t, 8*8 > distance{};
 		for (uint32_t y = 0; y < 8; ++y) {
 			for (uint32_t x = 0; x < 8; ++x) {
 				float d = glm::length(glm::vec2((x + 0.5f) - 4.0f, (y + 0.5f) - 4.0f));
@@ -28,8 +28,8 @@ PlayMode::PlayMode() {
 			}
 		}
 		for (uint32_t index = 0; index < 16; ++index) {
-			PPU466::Tile tile;
-			uint8_t t = uint8_t((255 * index) / 16);
+			PPU466::Tile tile{};
+			auto t = uint8_t((255 * index) / 16);
 			for (uint32_t y = 0; y < 8; ++y) {
 				uint8_t bit0 = 0;
 				uint8_t bit1 = 0;
@@ -104,8 +104,7 @@ PlayMode::PlayMode() {
 
 }
 
-PlayMode::~PlayMode() {
-}
+PlayMode::~PlayMode() = default;
 
 bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
 

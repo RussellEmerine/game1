@@ -7,7 +7,7 @@
 #define STR(X) STR2(X)
 
 inline void gl_errors(std::string const &where) {
-	GLenum err = 0;
+	GLenum err;
 	while ((err = glGetError()) != GL_NO_ERROR) {
 		#define CHECK( ERR ) \
 			if (err == ERR) { \

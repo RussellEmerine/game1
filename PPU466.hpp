@@ -43,7 +43,7 @@ struct PPU466 {
 
 	//Palette Table:
 	// The PPU stores 8 palettes for use when drawing tiles:
-	std::array< Palette, 8 > palette_table;
+	std::array< Palette, 8 > palette_table{};
 
 	//Tile:
 	// The PPU uses 8x8 2-bit indexed-color tiles:
@@ -65,7 +65,7 @@ struct PPU466 {
 	//Tile Table:
 	// The PPU has a 256-tile 'pattern memory' in which tiles are stored:
 	//  this is often thought of as a 16x16 grid of tiles.
-	std::array< Tile, 16 * 16 > tile_table;
+	std::array< Tile, 16 * 16 > tile_table{};
 
 	//Background Layer:
 	// The PPU's background layer is made of 64x60 tiles (512 x 480 pixels).
@@ -87,7 +87,7 @@ struct PPU466 {
 	//            ^        ^        ^-- tile index
 	//            |        '----------- palette index
 	//            '-------------------- unused (set to zero)
-	std::array< uint16_t, BackgroundWidth * BackgroundHeight > background;
+	std::array< uint16_t, BackgroundWidth * BackgroundHeight > background{};
 
 	//Background Position:
 	// The background's lower-left pixel can positioned anywhere

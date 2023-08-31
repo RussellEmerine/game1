@@ -13,13 +13,9 @@
 //for screenshots:
 #include "load_save_png.hpp"
 
-//Includes for libSDL:
-#include <SDL.h>
-
 //...and for c++ standard library functions:
 #include <chrono>
 #include <iostream>
-#include <stdexcept>
 #include <memory>
 #include <algorithm>
 
@@ -189,10 +185,10 @@ int main(int argc, char **argv) {
 	//------------  teardown ------------
 
 	SDL_GL_DeleteContext(context);
-	context = 0;
+	context = nullptr;
 
 	SDL_DestroyWindow(window);
-	window = NULL;
+	window = nullptr;
 
 	return 0;
 

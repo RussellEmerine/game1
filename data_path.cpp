@@ -1,8 +1,6 @@
 #include "data_path.hpp"
 
-#include <iostream>
 #include <vector>
-#include <sstream>
 
 #if defined(_WIN32)
 #include <windows.h>
