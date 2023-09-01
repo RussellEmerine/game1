@@ -6,5 +6,6 @@ dist/game.pdb
 dist/SDL2.dll
 dist/game
 dist/game.exe
+dist/tiles.png
 maek-cache.json
 cmake-build-debug

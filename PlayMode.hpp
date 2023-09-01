@@ -1,3 +1,5 @@
+#pragma once
+
 #include "PPU466.hpp"
 #include "Mode.hpp"
 
@@ -15,21 +17,8 @@ struct PlayMode : Mode {
 	void update(float elapsed) override;
 	void draw(glm::uvec2 const &drawable_size) override;
 
-	//----- game state -----
-
-	//input tracking:
-	struct Button {
-		uint8_t downs = 0;
-		uint8_t pressed = 0;
-	} left, right, down, up;
-
-	//some weird background animation:
-	float background_fade = 0.0f;
-
-	//player position:
-	glm::vec2 player_at = glm::vec2(0.0f);
-
+    // TODO: add game state
+    
 	//----- drawing handled by PPU466 -----
-
 	PPU466 ppu;
 };

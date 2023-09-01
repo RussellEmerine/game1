@@ -15,7 +15,6 @@ include_directories(
         ../nest-libs/macos/libopus/include
         ../nest-libs/macos/libopusenc/include
         ../nest-libs/macos/libpng/include
-        ../nest-libs/macos/opus-tools/include
         ../nest-libs/macos/opusfile/include
         ../nest-libs/macos/zlib/include
 )
@@ -40,4 +39,6 @@ add_executable(game1
         PlayMode.hpp
         PPU466.cpp
         PPU466.hpp
-        read_write_chunk.hpp)
+        read_write_chunk.hpp
+        util.hpp
+        util.cpp)
