@@ -79,7 +79,7 @@ if (maek.OS === "windows") {
 let copies = [
     maek.COPY(`${NEST_LIBS}/SDL2/dist/README-SDL.txt`, `dist/README-SDL.txt`),
     maek.COPY(`${NEST_LIBS}/libpng/dist/README-libpng.txt`, `dist/README-libpng.txt`),
-    maek.COPY(`tiles.png`, `dist/tiles.png`),
+    maek.COPY(`atlas.png`, `dist/atlas.png`),
 ];
 if (maek.OS === 'windows') {
     copies.push(maek.COPY(`${NEST_LIBS}/SDL2/dist/SDL2.dll`, `dist/SDL2.dll`));
@@ -110,7 +110,8 @@ const game_objs = [
     maek.CPP('Mode.cpp'),
     maek.CPP('gl_compile_program.cpp'),
     maek.CPP('GL.cpp'),
-    maek.CPP('util.cpp')
+    maek.CPP('util.cpp'),
+    maek.CPP('Ball.cpp')
 ];
 
 //the '[exeFile =] LINK(objFiles, exeFileBase, [, options])' links an array of objects into an executable:

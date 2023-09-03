@@ -17,7 +17,7 @@ void read_chunk(std::istream &from, std::string const &magic, std::vector< T > *
 	auto &to = *to_;
 
 	struct ChunkHeader {
-		char magic[4] = {'\0', '\0', '\0', '\0'};
+        [[maybe_unused]] char magic[4] = {'\0', '\0', '\0', '\0'};
 		uint32_t size = 0;
 	};
 	static_assert(sizeof(ChunkHeader) == 8, "header is packed");
@@ -49,7 +49,7 @@ void write_chunk(std::string const &magic, std::vector< T > const &from, std::os
 	auto &to = *to_;
 
 	struct ChunkHeader {
-		char magic[4] = {'\0', '\0', '\0', '\0'};
+        [[maybe_unused]] char magic[4] = {'\0', '\0', '\0', '\0'};
 		uint32_t size = 0;
 	};
 	static_assert(sizeof(ChunkHeader) == 8, "header is packed");

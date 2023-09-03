@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.26)
 project(game1)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 include_directories(
         .
@@ -41,4 +41,6 @@ add_executable(game1
         PPU466.hpp
         read_write_chunk.hpp
         util.hpp
-        util.cpp)
+        util.cpp
+        Ball.cpp
+        Ball.hpp)
