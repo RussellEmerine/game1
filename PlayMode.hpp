@@ -3,6 +3,7 @@
 #include "Ball.hpp"
 #include "PPU466.hpp"
 #include "Mode.hpp"
+#include "Level.hpp"
 
 #include <glm/glm.hpp>
 
@@ -10,7 +11,8 @@
 #include <deque>
 
 struct PlayMode : Mode {
-    PlayMode();
+    // Initializes the PlayMode with level i
+    explicit PlayMode(size_t lvl);
     
     ~PlayMode() override;
     
@@ -22,7 +24,7 @@ struct PlayMode : Mode {
     void draw(glm::uvec2 const &drawable_size) override;
     
     // TODO: add game state
-    std::vector<Ball> balls;
+    Level level;
     
     //----- drawing handled by PPU466 -----
     PPU466 ppu;

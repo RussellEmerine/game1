@@ -80,6 +80,7 @@ let copies = [
     maek.COPY(`${NEST_LIBS}/SDL2/dist/README-SDL.txt`, `dist/README-SDL.txt`),
     maek.COPY(`${NEST_LIBS}/libpng/dist/README-libpng.txt`, `dist/README-libpng.txt`),
     maek.COPY(`atlas.png`, `dist/atlas.png`),
+    maek.COPY(`levels/0.lvl`, `dist/levels/0.lvl`),
 ];
 if (maek.OS === 'windows') {
     copies.push(maek.COPY(`${NEST_LIBS}/SDL2/dist/SDL2.dll`, `dist/SDL2.dll`));
@@ -111,6 +112,7 @@ const game_objs = [
     maek.CPP('gl_compile_program.cpp'),
     maek.CPP('GL.cpp'),
     maek.CPP('util.cpp'),
+    maek.CPP('Level.cpp'),
     maek.CPP('Ball.cpp')
 ];
 
