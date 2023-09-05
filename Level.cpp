@@ -1,4 +1,5 @@
 #include "Level.hpp"
+#include "util.hpp"
 
 Level::Level() = default;
 
@@ -127,15 +128,153 @@ void Level::update(float elapsed) {
         if (glm::length(ball.vel) > VEL_CAP) {
             ball.vel = glm::normalize(ball.vel) * VEL_CAP;
         }
-        ball.pos += (double) elapsed * RATE * ball.vel;
+        // move the ball to its destination according to the velocity
+        // group 0 and ball.vel are ignored
+        move(ball, Ball(0, ball.pos + (double) elapsed * RATE * ball.vel, ball.vel));
     }
 }
 
-uint8_t Level::tile_at(double x, double y) {
-    if (x < 0 || y < 0) {
+void Level::move(Ball &ball, Ball dest) {
+    // how far until a tile boundary...
+    glm::f64 dist = 100;
+    // and which way the first boundary is.
+    // yes yes, enum would be better style
+    char dir = ' ';
+    glm::f64 bound = 0;
+    
+    // check if movements collide
+    // there might be a way to make this into a nice for loop but that's too clever
+    {
+        // x means edge of the ball
+        glm::f64 x = ball.center()[0] - Ball::R;
+        // b means tile boundary
+        // this operation doesn't work if there are negatives,
+        // but balls shouldn't have any part negative.
+        glm::f64 b = std::floor(x / 8) * 8;
+        // y means edge of the ball when it reaches the destination
+        glm::f64 y = dest.center()[0] - Ball::R;
+        if (y + EPSILON < b) {
+            // distance travelled
+            glm::f64 d = (x - b) * glm::length(dest.pos - ball.pos) / std::abs(dest.pos[0] - ball.pos[0]);
+            if (d < dist) {
+                dist = d;
+                dir = 'L';
+                bound = b;
+            }
+        }
+    }
+    {
+        glm::f64 x = ball.center()[0] + Ball::R;
+        glm::f64 b = std::ceil(x / 8) * 8;
+        glm::f64 y = dest.center()[0] + Ball::R;
+        if (y - EPSILON > b) {
+            glm::f64 d = (b - x) * glm::length(dest.pos - ball.pos) / std::abs(dest.pos[0] - ball.pos[0]);
+            if (d < dist) {
+                dist = d;
+                dir = 'R';
+                bound = b;
+            }
+        }
+    }
+    {
+        glm::f64 x = ball.center()[1] - Ball::R;
+        glm::f64 b = std::floor(x / 8) * 8;
+        glm::f64 y = dest.center()[1] - Ball::R;
+        if (y + EPSILON < b) {
+            glm::f64 d = (x - b) * glm::length(dest.pos - ball.pos) / std::abs(dest.pos[1] - ball.pos[1]);
+            if (d < dist) {
+                dist = d;
+                dir = 'D';
+                bound = b;
+            }
+        }
+    }
+    {
+        glm::f64 x = ball.center()[1] + Ball::R;
+        glm::f64 b = std::ceil(x / 8) * 8;
+        glm::f64 y = dest.center()[1] + Ball::R;
+        if (y - EPSILON > b) {
+            glm::f64 d = (b - x) * glm::length(dest.pos - ball.pos) / std::abs(dest.pos[1] - ball.pos[1]);
+            if (d < dist) {
+                dist = d;
+                dir = 'U';
+                bound = b;
+            }
+        }
+    }
+    
+    switch (dir) {
+        case ' ':
+            // no boundaries, go directly to dest
+            ball.pos = dest.pos;
+            break;
+        case 'L':
+            // move to the boundary
+            ball.pos += dist * glm::normalize(dest.pos - ball.pos);
+            // if there is collision
+            if (tile_at(ball.center() + glm::f64vec2(-Ball::R - EPSILON, -Ball::R)) == 1
+                || tile_at(ball.center() + glm::f64vec2(-Ball::R - EPSILON, Ball::R)) == 1) {
+                // make sure it's on the correct side
+                ball.pos[0] += EPSILON;
+                // reflect direction
+                ball.vel[0] *= -1;
+                // clumsy but correct
+                // the new center should be at bound + (bound - (dest.center()[0] - Ball::R))
+                // so manually adjust it back
+                dest.pos[0] = bound + (bound - (dest.center()[0] - Ball::R)) + Ball::R - Ball::OFFSET;
+            } else {
+                // no collision so no changes to dest or vel
+                // make sure it's on the correct side
+                ball.pos[0] -= EPSILON;
+            }
+            move(ball, dest);
+            break;
+        case 'R':
+            ball.pos += dist * glm::normalize(dest.pos - ball.pos);
+            if (tile_at(ball.center() + glm::f64vec2(Ball::R + EPSILON, -Ball::R)) == 1
+                || tile_at(ball.center() + glm::f64vec2(Ball::R + EPSILON, Ball::R)) == 1) {
+                ball.pos[0] -= EPSILON;
+                ball.vel[0] *= -1;
+                dest.pos[0] = bound - ((dest.center()[0] + Ball::R) - bound) - Ball::R - Ball::OFFSET;
+            } else {
+                ball.pos[0] += EPSILON;
+            }
+            move(ball, dest);
+            break;
+        case 'D':
+            ball.pos += dist * glm::normalize(dest.pos - ball.pos);
+            if (tile_at(ball.center() + glm::f64vec2(Ball::R, -Ball::R - EPSILON)) == 1
+                || tile_at(ball.center() + glm::f64vec2(-Ball::R, -Ball::R - EPSILON)) == 1) {
+                ball.pos[1] += EPSILON;
+                ball.vel[1] *= -1;
+                dest.pos[1] = bound + (bound - (dest.center()[1] - Ball::R)) + Ball::R - Ball::OFFSET;
+            } else {
+                ball.pos[1] -= EPSILON;
+            }
+            move(ball, dest);
+            break;
+        case 'U':
+            ball.pos += dist * glm::normalize(dest.pos - ball.pos);
+            if (tile_at(ball.center() + glm::f64vec2(Ball::R, Ball::R + EPSILON)) == 1
+                || tile_at(ball.center() + glm::f64vec2(-Ball::R, Ball::R + EPSILON)) == 1) {
+                ball.pos[1] -= EPSILON;
+                ball.vel[1] *= -1;
+                dest.pos[1] = bound - ((dest.center()[1] + Ball::R) - bound) - Ball::R - Ball::OFFSET;
+            } else {
+                ball.pos[1] += EPSILON;
+            }
+            move(ball, dest);
+            break;
+        default:
+            assert(false && "invalid dir char, should not happen");
+    }
+}
+
+uint8_t Level::tile_at(glm::f64vec2 pos) {
+    if (pos[0] < 0 || pos[1] < 0) {
         return 1;
     }
-    auto j = (size_t) (x / 8), i = (size_t) (y / 8);
+    auto j = (size_t) (pos[0] / 8), i = (size_t) (pos[1] / 8);
     if (i >= layout.size() || j >= layout[i].size()) {
         return 1;
     }

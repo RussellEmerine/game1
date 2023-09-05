@@ -62,7 +62,7 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 
 void PlayMode::update(float elapsed) {
     level.update(elapsed);
-    if (level.tile_at(level.balls[0].pos[0] + 4, level.balls[0].pos[1] + 4) == 16) {
+    if (level.tile_at(level.balls[0].pos + glm::f64vec2(4, 4)) == 16) {
         // TODO: make this a win mode or go to next level
         set_current(nullptr);
     }
@@ -70,17 +70,13 @@ void PlayMode::update(float elapsed) {
 
 void PlayMode::draw(glm::uvec2 const &drawable_size) {
     for (size_t i = 0; i < level.balls.size(); i++) {
-        if (0 <= level.balls[i].pos[0] && level.balls[i].pos[0] <= PPU466::ScreenWidth
-            && 0 <= level.balls[i].pos[1] && level.balls[i].pos[1] <= PPU466::ScreenHeight) {
-            ppu.sprites[i] = {
-                    (uint8_t) level.balls[i].pos[0],
-                    (uint8_t) level.balls[i].pos[1],
-                    static_cast<uint8_t>(i == 0 ? 2 : 3),
-                    sprite_attribute(false, level.balls[i].group),
-            };
-        } else {
-            ppu.sprites[i] = {};
-        }
+        // max with EPSILON to eliminate flashing when at the bottom or left edge
+        ppu.sprites[i] = {
+                (uint8_t) std::max(level.balls[i].pos[0], EPSILON),
+                (uint8_t) std::max(level.balls[i].pos[1], EPSILON),
+                static_cast<uint8_t>(i == 0 ? 2 : 3),
+                sprite_attribute(false, level.balls[i].group),
+        };
     }
     
     ppu.draw(drawable_size);

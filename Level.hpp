@@ -68,5 +68,25 @@ struct Level {
      * but you should add epsilons to ensure the right value.
      * Returns 1 (filled tile) for out-of-bounds locations.
      */
-    uint8_t tile_at(double x, double y);
+    uint8_t tile_at(glm::f64vec2 pos);
+    
+private:
+    /*
+     * Moves the ball to the destination, bouncing off any walls.
+     * So, the ball does not actually end at the destination, but it
+     * moves the same total distance.
+     *
+     * `dest` is a `Ball` just so `.center()` is available. Only the position
+     * is used.
+     *
+     * The implementation is not "stupid" - it follows the movement to
+     * the nearest tile boundary, performs a collision check, places the ball
+     * immediately after any collisions or boundary crossings, and recursively
+     * calls itself with the new position. This is much more complicated than,
+     * for example, assuming all movement distances are small and only checking
+     * for one bounce. However, it is conceptually not too hard to understand
+     * and should eliminate all game-breaking collision errors, except in rare
+     * cases where the corners are hit exactly.
+     */
+    void move(Ball &ball, Ball dest);
 };
