@@ -2,6 +2,8 @@
 #include "util.hpp"
 #include "WinMode.hpp"
 
+// TODO: still change the title lol
+
 PlayMode::PlayMode(const std::shared_ptr<Mode> &select, PPU466 &ppu, Level level)
         : level(level), select(select), ppu(ppu) {
     ppu.background_color = level.background_color;
