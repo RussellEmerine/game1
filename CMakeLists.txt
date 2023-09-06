@@ -45,4 +45,8 @@ add_executable(game1
         Ball.cpp
         Ball.hpp
         Level.cpp
-        Level.hpp)
+        Level.hpp
+        SelectMode.cpp
+        SelectMode.hpp
+        WinMode.cpp
+        WinMode.hpp)

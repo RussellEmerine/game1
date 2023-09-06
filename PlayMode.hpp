@@ -3,6 +3,7 @@
 #include "Ball.hpp"
 #include "PPU466.hpp"
 #include "Mode.hpp"
+#include "SelectMode.hpp"
 #include "Level.hpp"
 
 #include <glm/glm.hpp>
@@ -11,21 +12,20 @@
 #include <deque>
 
 struct PlayMode : Mode {
-    // Initializes the PlayMode with level i
-    explicit PlayMode(size_t lvl);
+    // Initializes the PlayMode with reference to the select mode and the given level
+    explicit PlayMode(const std::shared_ptr<Mode> &select, PPU466 &ppu, Level level);
     
     ~PlayMode() override;
     
-    //functions called by main loop:
+    // functions called by main loop:
     bool handle_event(SDL_Event const &, glm::uvec2 const &window_size) override;
     
     void update(float elapsed) override;
     
     void draw(glm::uvec2 const &drawable_size) override;
     
-    // TODO: add game state
     Level level;
-    
-    //----- drawing handled by PPU466 -----
-    PPU466 ppu;
+    float time = 0;
+    std::shared_ptr<Mode> select;
+    PPU466 &ppu;
 };

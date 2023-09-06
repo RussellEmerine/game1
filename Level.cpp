@@ -1,5 +1,8 @@
+#include <fstream>
+
 #include "Level.hpp"
 #include "util.hpp"
+#include "data_path.hpp"
 
 Level::Level() = default;
 
@@ -24,7 +27,9 @@ glm::u8vec4 get_glm_u8vec4(std::istream &in) {
     };
 }
 
-Level::Level(std::istream &in) {
+Level::Level(const std::string &name) : name(name) {
+    std::ifstream in(data_path("levels/" + name + ".lvl"));
+    
     std::string tmp;
     
     background_color = get_glm_u8vec3(in);
@@ -76,28 +81,28 @@ bool Level::handle_event(const SDL_Event &evt) {
     if (evt.type == SDL_KEYDOWN) {
         // TODO: clean this up
         switch (evt.key.keysym.sym) {
-            case SDLK_0:
+            case SDLK_1:
                 balls[0].group = 0;
                 break;
-            case SDLK_1:
+            case SDLK_2:
                 balls[0].group = 1;
                 break;
-            case SDLK_2:
+            case SDLK_3:
                 balls[0].group = 2;
                 break;
-            case SDLK_3:
+            case SDLK_4:
                 balls[0].group = 3;
                 break;
-            case SDLK_4:
+            case SDLK_5:
                 balls[0].group = 4;
                 break;
-            case SDLK_5:
+            case SDLK_6:
                 balls[0].group = 5;
                 break;
-            case SDLK_6:
+            case SDLK_7:
                 balls[0].group = 6;
                 break;
-            case SDLK_7:
+            case SDLK_8:
                 balls[0].group = 7;
                 break;
         }
@@ -279,6 +284,22 @@ uint8_t Level::tile_at(glm::f64vec2 pos) {
         return 1;
     }
     return layout[i][j];
+}
+
+bool Level::operator<(const Level &rhs) const {
+    return name < rhs.name;
+}
+
+bool Level::operator>(const Level &rhs) const {
+    return rhs < *this;
+}
+
+bool Level::operator<=(const Level &rhs) const {
+    return !(rhs < *this);
+}
+
+bool Level::operator>=(const Level &rhs) const {
+    return !(*this < rhs);
 }
 
 

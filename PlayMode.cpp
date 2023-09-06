@@ -1,42 +1,9 @@
-#include <fstream>
-
-#include "Load.hpp"
 #include "PlayMode.hpp"
-#include "data_path.hpp"
-#include "load_save_png.hpp"
 #include "util.hpp"
+#include "WinMode.hpp"
 
-
-typedef std::array<PPU466::Tile, 16 * 16> Atlas;
-
-Load<Atlas> atlas(LoadTagDefault, []() {
-    auto *atlas = new Atlas;
-    *atlas = {};
-    glm::uvec2 size;
-    std::vector<glm::u8vec4> data;
-    load_png(data_path("atlas.png"), &size, &data, UpperLeftOrigin);
-    assert(size == glm::uvec2(16 * 8, 8 * 8) && "atlas.png had the wrong size, should be 16x8 grid of 8x8 tiles");
-    for (size_t r = 0; r < 8; ++r) {
-        for (size_t c = 0; c < 16; ++c) {
-            for (size_t i = 0; i < 8; ++i) {
-                for (size_t j = 0; j < 8; ++j) {
-                    (*atlas)[16 * r + c].bit0[7 - i] |=
-                            (data[(8 * r + i) * 16 * 8 + (8 * c + j)][0] & 1) << j;
-                }
-            }
-        }
-    }
-    return atlas;
-});
-
-PlayMode::PlayMode(size_t lvl) {
-    {
-        // TODO: make this work on windows
-        std::ifstream in(data_path("levels/" + std::to_string(0) + ".lvl"));
-        level = Level(in);
-    }
-    
-    ppu.tile_table = *atlas;
+PlayMode::PlayMode(const std::shared_ptr<Mode> &select, PPU466 &ppu, Level level)
+        : level(level), select(select), ppu(ppu) {
     ppu.background_color = level.background_color;
     ppu.palette_table = level.palette_table;
     for (size_t i = 0; i < level.layout.size(); i++) {
@@ -51,7 +18,7 @@ PlayMode::~PlayMode() = default;
 bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
     if (evt.type == SDL_KEYDOWN) {
         if (evt.key.keysym.sym == SDLK_q) {
-            set_current(nullptr);
+            set_current(select);
         } else {
             return level.handle_event(evt);
         }
@@ -62,9 +29,9 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 
 void PlayMode::update(float elapsed) {
     level.update(elapsed);
+    time += elapsed;
     if (level.tile_at(level.balls[0].pos + glm::f64vec2(4, 4)) == 16) {
-        // TODO: make this a win mode or go to next level
-        set_current(nullptr);
+        set_current(std::make_shared<WinMode>(select, ppu, time));
     }
 }
 

@@ -24,11 +24,12 @@ struct Level {
     Layout layout{};
     // Ball positions, velocities, and groups, with player ball at index 0
     std::vector<Ball> balls;
+    std::string name;
     
     Level();
     
     /*
-     * Reads a Level from a .lvl file.
+     * Reads a Level from a .lvl file. Input `name` is the file name without .lvl
      *
      * NOTE: .lvl files
      * A .lvl file is essentially a text file with a particular very simple syntax.
@@ -56,7 +57,7 @@ struct Level {
      *
      * TODO: move this documentation into README or similar
      */
-    explicit Level(std::istream &in);
+    explicit Level(const std::string &name);
     
     bool handle_event(SDL_Event const &evt);
     
@@ -70,6 +71,14 @@ struct Level {
      */
     uint8_t tile_at(glm::f64vec2 pos);
     
+    bool operator<(const Level &rhs) const;
+    
+    bool operator>(const Level &rhs) const;
+    
+    bool operator<=(const Level &rhs) const;
+    
+    bool operator>=(const Level &rhs) const;
+
 private:
     /*
      * Moves the ball to the destination, bouncing off any walls.

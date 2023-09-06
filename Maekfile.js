@@ -12,6 +12,8 @@
 //  targetN  target name. Posix-style path to a file to build, or an abstract target (word starting with ':')
 //
 
+const fs = require("fs");
+
 //maek is configured using properties and methods of the `maek` object:
 const maek = init_maek();
 // (it's a quirk of javascript that function definitions anywhere in scope get 'hoisted'
@@ -80,10 +82,15 @@ let copies = [
     maek.COPY(`${NEST_LIBS}/SDL2/dist/README-SDL.txt`, `dist/README-SDL.txt`),
     maek.COPY(`${NEST_LIBS}/libpng/dist/README-libpng.txt`, `dist/README-libpng.txt`),
     maek.COPY(`atlas.png`, `dist/atlas.png`),
-    maek.COPY(`levels/0.lvl`, `dist/levels/0.lvl`),
 ];
 if (maek.OS === 'windows') {
     copies.push(maek.COPY(`${NEST_LIBS}/SDL2/dist/SDL2.dll`, `dist/SDL2.dll`));
+}
+
+for (const file of fs.readdirSync(`levels`, {withFileTypes: true})) {
+    if (file.isFile()) {
+        copies.push(maek.COPY(`levels/${file.name}`, `dist/levels/${file.name}`));
+    }
 }
 
 //call rules on the maek object to specify tasks.
@@ -102,7 +109,9 @@ if (maek.OS === 'windows') {
 // objFileBase (optional): base name object file to produce (if not supplied, set to options.objDir + '/' + cppFile without the extension)
 //returns objFile: objFileBase + a platform-dependant suffix ('.o' or '.obj')
 const game_objs = [
+    maek.CPP('SelectMode.cpp'),
     maek.CPP('PlayMode.cpp'),
+    maek.CPP('WinMode.cpp'),
     maek.CPP('PPU466.cpp'),
     maek.CPP('main.cpp'),
     maek.CPP('load_save_png.cpp'),
