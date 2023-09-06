@@ -97,13 +97,6 @@ for (const file of fs.readdirSync(`levels`, {withFileTypes: true})) {
 // rules generally look like:
 //  output = maek.RULE_NAME(input [, output] [, {options}])
 
-//use CHECK to print a message when something is missing
-//'[targets =] CHECK(targets, prerequisites, message)'
-// targets: array of targets the task produces (can include both files and ':abstract targets')
-// prerequisites: array of things that must exist before manual task message is printed
-// message: message to print if targets don't exist
-//returns targets: the targets the rule produces
-
 //the '[objFile =] CPP(cppFile [, objFileBase] [, options])' compiles a c++ file:
 // cppFile: name of c++ file to compile
 // objFileBase (optional): base name object file to produce (if not supplied, set to options.objDir + '/' + cppFile without the extension)
@@ -141,13 +134,13 @@ function init_maek() {
     //----------------------------------
     //some setup
 
-    //standard libraries:
-    const path = require('path').posix; //NOTE: expect posix-style paths even on windows
-    const fsPromises = require('fs/promises');
-    const fs = require('fs');
-    const os = require('os');
-    const performance = require('perf_hooks').performance;
-    const child_process = require('child_process');
+	//standard libraries:
+	const path = require('path').posix; //NOTE: expect posix-style paths even on windows
+	const fsPromises = require('fs').promises;
+	const fs = require('fs');
+	const os = require('os');
+	const performance = require('perf_hooks').performance;
+	const child_process = require('child_process');
 
     //make it so that all paths/commands are relative to this file:
     // (regardless of where you run it from)
@@ -281,17 +274,15 @@ function init_maek() {
         //computed dependencies go in a '.d' file stored next to the object file:
         const depsFile = objFileBase + '.d';
 
-        let cc, command;
-        cc = [...options.CPP, ...options.CPPFlags];
-        if (maek.OS === 'linux') {
-            //TODO: check on linux
-            command = [...cc, '-MD', '-MT', 'x ', '-MF', depsFile, '-c', '-o', objFile, cppFile];
-        } else if (maek.OS === 'macos') {
-            //TODO: check on macos
-            command = [...cc, '-MD', '-MT', 'x ', '-MF', depsFile, '-c', '-o', objFile, cppFile];
-        } else { //windows
-            command = [...cc, '/c', `/Fo${objFile}`, '/sourceDependencies', depsFile, '/Tp', cppFile];
-        }
+		let cc, command;
+		cc = [...options.CPP, ...options.CPPFlags];
+		if (maek.OS === 'linux') {
+			command = [...cc, '-MD', '-MT', 'x ', '-MF', depsFile, '-c', '-o', objFile, cppFile];
+		} else if (maek.OS === 'macos') {
+			command = [...cc, '-MD', '-MT', 'x ', '-MF', depsFile, '-c', '-o', objFile, cppFile];
+		} else { //windows
+			command = [...cc, '/c', `/Fo${objFile}`, '/sourceDependencies', depsFile, '/Tp', cppFile];
+		}
 
         //will be used by loadDeps to trim explicit dependencies:
         async function loadDeps() {
@@ -669,55 +660,55 @@ function init_maek() {
         let running = []; //tasks currently running
         let CANCEL_ALL_TASKS = false; //skip remaining tasks?
 
-        async function launch(task) {
-            running.push(task);
-            let failedDepends = [];
-            for (const depend of task.depends) {
-                if (tasks[depend].failed) {
-                    failedDepends.push(depend);
-                } else {
-                    console.assert(tasks[depend].finished, "all depends should be failed or finished");
-                }
-            }
-            if (failedDepends.length) {
-                task.failed = true;
-                if (maek.VERBOSE) console.error(`!!! SKIPPED [${task.label}] because target(s) ${failedDepends.join(', ')} failed.`);
-            }
-            try {
-                if (!task.failed) {
-                    await task();
-                    task.finished = true;
-                }
-            } catch (e) {
-                if (e instanceof BuildError) {
-                    console.error(`\x1b[91m!!! FAILED [${task.label}] ${e.message}\x1b[0m`);
-                    task.failed = true;
-                    //if -q flag is set, immediately cancel all jobs:
-                    if (maek.QUIT_EAGERLY) {
-                        CANCEL_ALL_TASKS = true; //set flag so obs cancel themselves
-                    }
-                } else {
-                    //don't expect any other exceptions, but if they do arise, re-throw 'em:
-                    throw e;
-                }
-            }
-            //check all neededBy for potential readiness:
-            for (const needed of task.neededBy) {
-                let allDone = true;
-                for (const depend of needed.depends) {
-                    if (!(tasks[depend].finished || tasks[depend].failed)) {
-                        allDone = false;
-                    }
-                }
-                if (allDone) {
-                    ready.push(needed);
-                }
-            }
-            //remove task from 'running' list:
-            let i = running.indexOf(task);
-            console.assert(i !== -1, "running tasks must exist within running list");
-            running.splice(i, 1);
-        }
+		async function launch(task) {
+			running.push(task);
+			let failedDepends = [];
+			for (const depend of task.depends) {
+				if (tasks[depend].failed) {
+					failedDepends.push(depend);
+				} else {
+					console.assert(tasks[depend].finished, "all depends should be failed or finished");
+				}
+			}
+			if (failedDepends.length) {
+				task.failed = true;
+				if (maek.VERBOSE) console.error(`!!! SKIPPED [${task.label}] because target(s) ${failedDepends.join(', ')} failed.`);
+			}
+			try {
+				if (!task.failed) {
+					await task();
+					task.finished = true;
+				}
+			} catch (e) {
+				if (e instanceof BuildError) {
+					console.error(`\x1b[91m!!! FAILED [${task.label}] ${e.message}\x1b[0m`);
+					task.failed = true;
+					//if -q flag is set, immediately cancel all jobs:
+					if (maek.QUIT_EAGERLY) {
+						CANCEL_ALL_TASKS = true; //set flag so jobs cancel themselves
+					}
+				} else {
+					//don't expect any other exceptions, but if they do arise, re-throw 'em:
+					throw e;
+				}
+			}
+			//check all neededBy for potential readiness:
+			for (const needed of task.neededBy) {
+				let allDone = true;
+				for (const depend of needed.depends) {
+					if (!(tasks[depend].finished || tasks[depend].failed)) {
+						allDone = false;
+					}
+				}
+				if (allDone) {
+					ready.push(needed);
+				}
+			}
+			//remove task from 'running' list:
+			let i = running.indexOf(task);
+			console.assert(i !== -1, "running tasks must exist within running list");
+			running.splice(i,1);
+		}
 
         //ready up anything that can be:
         for (const task of pending) {
