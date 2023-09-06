@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "PPU466.hpp"
 
 // I manually define EPSILON since numeric_limits<double>::epsilon() doesn't

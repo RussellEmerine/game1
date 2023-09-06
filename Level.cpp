@@ -1,4 +1,5 @@
 #include <fstream>
+#include <algorithm>
 
 #include "Level.hpp"
 #include "util.hpp"
