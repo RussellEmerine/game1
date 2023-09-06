@@ -67,8 +67,8 @@ SelectMode::SelectMode() : index(0), active(false) {
     
     // look through the levels folder and initialize the level list
     for (auto const &f: std::filesystem::directory_iterator(data_path("levels"))) {
-        if (f.is_regular_file() && f.path().extension() == ".lvl") {
-            levels.emplace_back(f.path().stem());
+        if (f.is_regular_file() && f.path().extension().string() == ".lvl") {
+            levels.emplace_back(f.path().stem().string());
         }
     }
     
