@@ -1,4 +1,5 @@
 #include <filesystem>
+#include <algorithm>
 
 #include "SelectMode.hpp"
 #include "PlayMode.hpp"
