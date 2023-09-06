@@ -24,6 +24,7 @@ Here is a quick overview of what is included. For further information, ☺read t
 - Here be dragons (files you probably don't need to look at):
 	- [`make-GL.py`](make-GL.py) does what it says on the tin. Included in case you are curious. You won't need to run it.
 	- [`glcorearb.h`](glcorearb.h) used by `make-GL.py` to produce `GL.*pp`
+	- [`set-utf8-code-page.manifest`](set-utf8-code-page.manifest) is added during linking on Windows to set the default codepage to UTF-8.
 
 
 ## Build Instructions
@@ -40,17 +41,17 @@ Setup for your development environment should be relatively simple:
 
  0. (Optional) Make sure your system is set up to make it easy to use your favorite code editor and git from the command prompt. So much nicer than using a GUI.
  1. Install one of our target C++ compilers:
- 	- Linux: g++
+	- Linux: g++
 	- MacOS: clang++ (from XCode). From the terminal: `xcode-select --install`
 	- Windows: Visual Studio Community 2022
  2. Install [node](https://node.js):
-    - Linux: e.g. `sudo apt-get install node`
+	- Linux: e.g. `sudo apt-get install node`
 	- MacOS: e.g. `brew install node`
 	- Windows: [download from node's web page](https://nodejs.org/en/download/)
  3. Extract an appropriate [release of nest-libs](https://github.com/15-466/nest-libs/releases) to a sibling of this folder:
-    - Linux: https://github.com/15-466/nest-libs/releases/download/v0.12/nest-libs-linux-v0.12.tar.gz
-	- MacOS: https://github.com/15-466/nest-libs/releases/download/v0.12/nest-libs-macos-v0.12.tar.gz
-	- Windows: https://github.com/15-466/nest-libs/releases/download/v0.12/nest-libs-windows-v0.12.zip
+	- Linux: https://github.com/15-466/nest-libs/releases/download/v0.13/nest-libs-linux-v0.13.tar.gz
+	- MacOS: https://github.com/15-466/nest-libs/releases/download/v0.13/nest-libs-macos-v0.13.tar.gz
+	- Windows: https://github.com/15-466/nest-libs/releases/download/v0.13/nest-libs-windows-v0.13.zip
 
 Once you are finished, your directory tree should looks something like this:
 
@@ -81,7 +82,7 @@ Here are a few worthwhile variations:
   $ node Maekfile.js -q -j1
 
 # Variation: run game if build succeeds:
-  $ node Maekfile.js && dist/pong
+  $ node Maekfile.js && dist/game
 
 # Variation: show commands being run (perhaps useful for debugging):
   $ node Maekfile.js -v
