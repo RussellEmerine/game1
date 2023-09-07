@@ -13,7 +13,6 @@
 //for screenshots:
 #include "load_save_png.hpp"
 
-// TODO: cleanup
 #include "data_path.hpp"
 #include "Level.hpp"
 
@@ -67,7 +66,7 @@ int main(int argc, char **argv) {
     SDL_Window *window = SDL_CreateWindow(
             "gravity race",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            2 * PPU466::ScreenWidth + 8, 2 * PPU466::ScreenHeight + 8, //TODO: modify window size if you'd like
+            2 * PPU466::ScreenWidth + 8, 2 * PPU466::ScreenHeight + 8,
             SDL_WINDOW_OPENGL
             | SDL_WINDOW_RESIZABLE //uncomment to allow resizing
             | SDL_WINDOW_ALLOW_HIGHDPI //uncomment for full resolution on high-DPI screens

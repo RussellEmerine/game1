@@ -31,31 +31,7 @@ struct Level {
     /*
      * Reads a Level from a .lvl file. Input `name` is the file name without .lvl
      *
-     * NOTE: .lvl files
-     * A .lvl file is essentially a text file with a particular very simple syntax.
-     * The syntax is as follows. All colors are hex values (without prefix),
-     * ball groups are integers from 0 to 7 inclusive,
-     * and all ball positions and velocities are decimals.
-     *
-     * line 1: single three-byte color for the background
-     * lines 2-9: single four-byte color for the palettes, in order
-     * lines 10-39: lines of characters representing tiles
-     *      - ' ' represents empty tile (id 0)
-     *      - '#' represents filled tile (id 1)
-     *      - '@' represents goal (id 16)
-     *      - other tiles represent themselves
-     *      - lines longer than 32 characters are truncated
-     *      - lines shorter than 32 characters are filled with blank tiles
-     * lines 40-end: five numbers representing a ball
-     *      - as in "group pos.x pos.y vel.x vel.y"
-     *      - there should be at least one ball (which will be the player ball)
-     *
-     * Due to the simplicity and visual effectiveness of the .lvl format,
-     * you can easily edit existing levels or create your own levels.
-     * Errors in the file format are not handled well yet,
-     * but may be detected in the future.
-     *
-     * TODO: move this documentation into README or similar
+     * .lvl files are described in `levels/README.md`
      */
     explicit Level(const std::string &name);
     

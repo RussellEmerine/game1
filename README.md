@@ -1,9 +1,10 @@
-# (TODO: your game's title)
+# Gravity Race
 
 ### Author: Russell Emerine
 
 ### Design: 
-(TODO: In two sentences or fewer, describe what is new and interesting about your game.)
+There are games that use gravity to fixed points as a movement mechanic. 
+Gravity Race instead uses gravity to freely moving points, which makes more complex interaction.
 
 ### Screen Shot:
 
@@ -24,13 +25,25 @@ The tiles are ordered so that text characters coincide with their ASCII numbers.
 `atlas.png` is loaded in, and each tile is read pixel by pixel.
 This only happens once, since all game modes use the same tiles.
 
-(TODO: describe the steps in your asset pipeline, from source files to tiles/backgrounds/whatever you upload to the PPU466.)
+Levels are represented using a simple text format described in 
+[`levels/README.md`](levels/README.md).
+This does involve parsing at runtime, which is slow,
+but this also allows for users to easily make their own levels.
+At runtime, the `levels` directory is traversed and any `.lvl` files
+are treated as level files and presented at select screen.
+This means users can add or modify levels at will
+and only have to restart the game rather than rebuild and reinstall.
 
-(TODO: make sure the source files you drew are included. You can [link](your/file.png) to them to be a bit fancier.)
+### How To Play:
 
-How To Play:
-
-(TODO: describe the controls and (if needed) goals/strategy.)
+You are a ball, and there are other balls.
+Balls of the same color share the same gravity,
+which means all red balls are attracted to each other,
+and all green balls are attracted to each other,
+but red and green balls are not attracted to each other.
+You can change your ball's color at will using the number keys `1` `2` `3` `4` `5` `6` `7` `8`.
+(There are always 8 colors.)
+Try to reach a goal area as fast as possible.
 
 This game was built with [NEST](NEST.md).
 

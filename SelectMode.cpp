@@ -72,7 +72,6 @@ SelectMode::SelectMode() : index(0), active(false) {
         }
     }
     
-    // TODO: document support of only ASCII filenames
     assert(!levels.empty() && "there are no levels in the levels folder, put some there are run again");
     
     // this is slow because of lots of moving things around but it doesn't matter unless you
@@ -97,6 +96,8 @@ void SelectMode::set_background() {
 
 void SelectMode::display_level() {
     ppu.background = {};
-    display_text(ppu, 10, 10, "Play!");
-    display_text(ppu, 15, 10, levels[index].name);
+    display_text(ppu, 11, 3, "Arrow keys to browse,");
+    display_text(ppu, 10, 3, "Enter to play");
+    display_text(ppu, 15, 4, "> " + levels[index].name);
+    display_text(ppu, 23, 8, "- GRAVITY RACE -");
 }

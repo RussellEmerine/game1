@@ -80,7 +80,7 @@ Level::Level(const std::string &name) : name(name) {
 
 bool Level::handle_event(const SDL_Event &evt) {
     if (evt.type == SDL_KEYDOWN) {
-        // TODO: clean this up
+        // didn't find a cleaner way to do this
         switch (evt.key.keysym.sym) {
             case SDLK_1:
                 balls[0].group = 0;
@@ -128,7 +128,6 @@ void Level::update(float elapsed) {
     }
     
     // update positions
-    // TODO: collision
     for (Ball &ball: balls) {
         // hard cap the velocity
         if (glm::length(ball.vel) > VEL_CAP) {
